@@ -113,6 +113,19 @@ def parseline(line):
     #Position 22 is Core City Indication 'Y' is a MSA (metropolitan statistical area) 'N' is not
     line_of_data_dictionary['Core_city_indication'] = line[22]
     
+    #Positions 23-29 'covered by' ORI of the agency submitting the data.
+    #blank if not covered by
+    line_of_data_dictionary['Covered_by'] = line[23:29]
+    
+    #Position 30 is the group of covered by ORI
+    line_of_data_dictionary['Covered_by_grp'] = line[30]
+    
+    #Positions 31-36 The date the heading or mailing list information
+    #was updated (MMDDYY)
+    line_of_data_dictionary['Last_update'] = line[31:37]
+    
+    
+    
     return line_of_data_dictionary
     
     
