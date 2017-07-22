@@ -68,6 +68,56 @@ STATEMAPPING = {'01' : 'AL - Alabama',
                 '55' : 'GM - Guam',
                 '62' : 'VI - Virgin Islands'}
 
+WEAPON_USED_MAPPING = {
+                '11' : 'Firearm, type not stated (not mechanics grease gun or caulking gun)',
+                '12' : 'Handgun',
+                '13' : 'Rifle',
+                '14' : 'Shotgun',
+                '15' : 'Other gun',
+                '20' : 'Knife or cutting instrument like icepick, screwdriver or (HEAVY GUITAR SOLO) AXE',
+                '40' : 'Personal weapons (beating, kicking, biting etc)',
+                '50' : 'Poison (not gas, see asphyxiation below)',
+                '55' : 'Pushed or thrown out of window',
+                '60' : 'Explosives',
+                '65' : 'Fire',
+                '70' : 'Narcotics/Drugs, including sleeping pills',
+                '75' : 'Drowning',
+                '80' : 'Strangulation/Hanging',
+                '85' : 'Asphyxiation including gas',
+                '90' : 'Other - type of weapon not designated or unknown'}
+#Victim-to-offender
+RELATIONSHIP_MAPPING:{
+                'HU' : 'Husband',
+                'WI' : 'Wife',
+                'CH' : 'Common-law husband',
+                'CW' : 'Common-law wife',
+                'MO' : 'Mother',
+                'FA' : 'Father',
+                'SO' : 'Son',
+                'DA' : 'Daughter',
+                'BR' : 'Brother',
+                'SI' : 'Sister',
+                'IL' : 'In-law',
+                'SF' : 'Stepfather',
+                'SM' : 'Stepmother',
+                'SS' : 'Stepson',
+                'SD' : 'Stepdaughter',
+                'OF' : 'Other family',
+                'NE' : 'Neighbor',
+                'AQ' : 'Aquaintance',
+                'BF' : 'Boyfriend',
+                'GF' : 'Girlfriend',
+                'XH' : 'Ex-husband',
+                'XW' : 'Ex-wife',
+                'EE' : 'Employee',
+                'ER' : 'Employer',
+                'FR' : 'Friend',
+                'HO' : 'Homosexual relationship',
+                'OK' : 'Other - known to victim',
+                'ST' : 'Stranger',
+                'UN' : 'Relationship cannot be determined'}
+
+
 def parseline(line):
     '''
     function for parsing MAP data into a python dictionary
@@ -79,91 +129,137 @@ def parseline(line):
     ORI = slice(3, 10)
     GROUP = slice(10, 12)
     DIVISION = 12
-    YEAR = slice(13, 15)
-    SEQUENCE_NUMBER = slice(15, 20)
-    JUVENILE_AGE = slice(20, 22)
-    CORE_CITY_INDICATION = 22
-    COVERED_BY = slice(23, 30)
-    COVERED_BY_GRP = 30
-    LAST_UPDATE = slice(31, 37)
-    #Field office whose territory covers the agency
-    FIELD_OFFICE = slice(37, 41)
-    #Number of the month that was the last month reported that year by the submitting agency
-    MONTHS_REPORTED = slice(41, 43)
-    #dummy variable for internal use
-    AGENCY_COUNT = 43
-    #NOTE: population 
-    #Population of the city
-    POPULATION = slice(44, 53)
-    #County the city is in 
-    COUNTY = slice(53, 56)
-    #If present, the code of the MSA the city is located in
-    MSA = slice(56, 59)
-    #If city resides in two counties, this is the second largest county population
-    GROUP_1 = slice(59, 74)
-    #If city resides in two counties, this is the population of the third largest county
-    GROUP_2 = slice(74, 89)
-    #NOTE:to get the total population of the city add the three above to get the total population of the city
-    
-    
-    
+    YEAR = slice(13,15)
+    #Total population for the agency for the year reported
+    POPULATION = slice(15,24)
+    #County code
+    COUNTY = slice(24, 27)
+    #Metropolitan statistical area
+    MSA = slice(27, 30)
+    #Suburban agency is an agency with population less than 50000 (groups 4-7) together
+    #with MSA counties (group 9) groups from GROUP ABOVE. 0 = non-SU
+    #1 = SU
+    MSA_INDICATION = 30
+    AGENCY_NAME = slice(31, 55)
+    STATE = slice(55,61)
+    #01-12
+    OFFENSE_MONTH = slice(61, 63)
+    #MMDDYY
+    LAST_UPDATE = slice(63, 69)
+    #0 = normal update, 1 = adjustment
+    ACTION_TYPE = 69
+    #A = Murder and non-negligent manslaughter
+    #B = Negligent manslaughter
+    HOMICIDE = 70
+    #Unique number distinghuishing incident from other within the ORI
+    INCIDENT_NUMBER = slice(71, 74)
+    """
+    A = Single victim Single offender
+    B = Single victim Unknown offender(s)
+    C = Single victim Multiple offenders
+    D = Multiple victims Single offender
+    E = Multiple victims Multiple offenders
+    F = Multiple victims Unknown offender(s)
+    """
+    SITUATION = 74
+    """
+    01-98 = Age in years
+    NB = 0-6 days, including abandoned infant
+    BB = 7-364 days
+    00 = Unknown
+    99 = 99y or older
+    """
+    AGE_OF_VICTIM = slice(75, 77)
+    """
+    M = Male
+    F = Female
+    U = Unknown
+    """
+    SEX_OF_VICTIM = 77
+    """
+    W = White (includes mexican-americans)
+    B = Black
+    I = American indian or Alaskan native
+    A = Asian or pacific islander
+    U = Unknown
+    """
+    RACE_OF_VICTIM = 78
+    """
+    H = Hispanic
+    N = Non-hispanic
+    U = Unknown
+    """
+    ETHNIC_ORIGIN_OF_VICTIM = 79
+    AGE_OF_OFFENDER = slice(80, 82)
+    SEX_OF_OFFENDER = 82
+    RACE_OF_OFFENDER = 83
+    ETHNIC_ORIGIN_OF_OFFENDER = 84
+    """
+    There is a dictionary for this called WEAPON_USED_MAPPING above
+    11 = Firearm, type not stated (not mechanics grease gun or caulking gun)
+    12 = Handgun
+    13 = Rifle
+    14 = Shotgun
+    15 = Other gun
+    20 = Knife or cutting instrument like icepick, screwdriver or (HEAVY GUITAR SOLO) AXE
+    40 = Personal weapons (beating, kicking, biting etc)
+    50 = Poison (not gas, see asphyxiation below)
+    55 = Pushed or thrown out of window
+    60 = Explosives
+    65 = Fire
+    70 = Narcotics/Drugs, including sleeping pills
+    75 = Drowning
+    80 = Strangulation/Hanging
+    85 = Asphyxiation including gas
+    90 = Other - type of weapon not designated or unknown
+    """
+    WEAPON_USED = slice(85, 87)
+    #For documentation see RELATIONSHIP_MAPPING above
+    RELATIONSHIP_OF_VICTIM_TO_OFFENDER = slice(87, 89)
+    FELONY_TYPE = slice(89, 91)
+    #Blank except when above is 80 or 81
+    SUB_CIRCUMSTANCE = 91
+    VICTIM_COUNT  = slice(92, 95)
+    OFFENDER_COUNT = slice(95,98)
+    #each addional victim is 5 characters
+    VICTIMS_02_11 = slice(98, 148)
+    OFFENDERS_02_11 = slice(148, 268)
     #get rid of the end of line character
-    line.rstrip('\n') 
-    line_of_data_dictionary['County'] = line[COUNTY]
-    line_of_data_dictionary['Group_2'] = line[GROUP_2]
-    line_of_data_dictionary['Group_1'] = line[GROUP_1]
-    line_of_data_dictionary['MSA'] = line[MSA]
-    line_of_data_dictionary['Population'] = line[POPULATION]
-    line_of_data_dictionary['Agency_count'] = line[AGENCY_COUNT]
-    line_of_data_dictionary['Months_reported'] = line[MONTHS_REPORTED]
-    line_of_data_dictionary['Field_office'] = line[FIELD_OFFICE]
-    #position 0 is ID
-    line_of_data_dictionary['ID'] = line[ID]
-    
-    #positions 1-2 contain State
+    line.rstrip('\n')
+    line_of_data_dictionary['Offenders_02_11'] = line[OFFENDERS_02_11]
+    line_of_data_dictionary['Victims_02_11'] = line[VICTIMS_02_11]
+    line_of_data_dictionary['Offender_count'] = line[OFFENDER_COUNT]
+    line_of_data_dictionary['Victim_count'] = line[VICTIM_COUNT]
+    line_of_data_dictionary['Subcircumstance'] = line[SUB_CIRCUMSTANCE]
+    line_of_data_dictionary['Felony_type'] = line[FELONY_TYPE]
+    line_of_data_dictionary['Relationship_of_victim_to_offender'] = line[RELATIONSHIP_OF_VICTIM_TO_OFFENDER]
+    line_of_data_dictionary['Weapon_used'] = line[WEAPON_USED]
+    line_of_data_dictionary['Ethnic_origin_of_offender'] = line[ETHNIC_ORIGIN_OF_OFFENDER]
+    line_of_data_dictionary['Race_of_offender'] = line[RACE_OF_OFFENDER]
+    line_of_data_dictionary['Sex_of_offender'] = line[SEX_OF_OFFENDER]
+    line_of_data_dictionary['Age_of_offender'] = line[AGE_OF_OFFENDER]
+    line_of_data_dictionary['Ethnic_origin_of_victim'] = line[ETHNIC_ORIGIN_OF_VICTIM]
+    line_of_data_dictionary['Race_of_victim'] = line[RACE_OF_VICTIM]
+    line_of_data_dictionary['Sex_of_victim'] = line[SEX_OF_VICTIM]
+    line_of_data_dictionary['Age_of_victim'] = line[AGE_OF_VICTIM]
+    line_of_data_dictionary['Situation'] = line[SITUATION]
+    line_of_data_dictionary['Incident_number'] = line[INCIDENT_NUMBER]
+    line_of_data_dictionary['Homicide'] = line[HOMICIDE]
+    line_of_data_dictionary['Action_type'] = line[ACTION_TYPE]
+    line_of_data_dictionary['Last_update'] = line[LAST_UPDATE] 
+    line_of_data_dictionary['Offense_month'] = line[OFFENSE_MONTH]
     line_of_data_dictionary['State'] = line[STATE]
-    
-    #Positions 3-9 in the string are the ORI Code, Originating Agency identifier
-    #to parse further TODO: https://www.icpsr.umich.edu/NACJD/ORIs/2010%20ORIs/ALoris.html
-    #contains descriptions of these
-    line_of_data_dictionary['ORI'] = line[ORI]
-    
-    #Positions 10-11 are a geographical GROUP identifier
-    #TODO add mapping constant to identifier to parse further
-    
-    line_of_data_dictionary['GROUP'] = line[GROUP]
-    
-    #position 12 is geographical DIVISION
-    #TODO add mapping constant
-    
-    line_of_data_dictionary['DIVISION'] = line[DIVISION]
-    
-    #Positions 13-14 are a year "85" = 1985, "90" = 1990 etc.
-    
+    line_of_data_dictionary['Agency_name'] = line[AGENCY_NAME]
+    line_of_data_dictionary['MSA_indication'] = line[MSA_INDICATION]
+    line_of_data_dictionary['MSA'] = line[MSA]
+    line_of_data_dictionary['County'] = line[COUNTY]
+    line_of_data_dictionary['Population'] = line[POPULATION]
     line_of_data_dictionary['Year'] = line[YEAR]
-    
-    #Positions 15-19 are Sequence number that places all the cities in alphabetical order
-    #blank for groups 0,8,9
-    
-    line_of_data_dictionary['Sequence_number'] = line[SEQUENCE_NUMBER]
-    
-    #Positions 20-21 are juvenile age limit in the state 
-    
-    line_of_data_dictionary['Juvenile_age'] = line[JUVENILE_AGE]
-    
-    #Position 22 is Core City Indication 'Y' is a MSA (metropolitan statistical area) 'N' is not
-    line_of_data_dictionary['Core_city_indication'] = line[CORE_CITY_INDICATION]
-    
-    #Positions 23-29 'covered by' ORI of the agency submitting the data.
-    #blank if not covered by
-    line_of_data_dictionary['Covered_by'] = line[COVERED_BY]
-    
-    #Position 30 is the group of covered by ORI
-    line_of_data_dictionary['Covered_by_grp'] = line[COVERED_BY_GRP]
-    
-    #Positions 31-36 The date the heading or mailing list information
-    #was updated (MMDDYY)
-    line_of_data_dictionary['Last_update'] = line[LAST_UPDATE]
+    line_of_data_dictionary['ID'] = line[ID]
+    line_of_data_dictionary['State'] = line[STATE]
+    line_of_data_dictionary['ORI'] = line[ORI]
+    line_of_data_dictionary['Group'] = line[GROUP]
+    line_of_data_dictionary['Division'] = line[DIVISION]
     
     
     
